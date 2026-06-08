@@ -8,15 +8,21 @@ __pycache__/
 build/
 dist/
 *.spec
+artifacts/
 
 # Local config / generated files
 config.json
 fast_travel_template.png
 scan_hits/
+logs/
 
 # IDE
 .vscode/
 .idea/
+
+# .NET
+**/bin/
+**/obj/
 
 # System
 .DS_Store

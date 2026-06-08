@@ -1,7 +1,5 @@
 import ctypes
 
-import pyautogui
-
 try:
     import winsound
 except ImportError:
@@ -15,13 +13,11 @@ except Exception:
     pass
 
 
-pyautogui.PAUSE = 0
-pyautogui.MINIMUM_DURATION = 0
-pyautogui.MINIMUM_SLEEP = 0
-
-
 def get_screen_size():
-    return pyautogui.size()
+    return (
+        ctypes.windll.user32.GetSystemMetrics(0),
+        ctypes.windll.user32.GetSystemMetrics(1),
+    )
 
 
 def is_key_down(vk_code):
@@ -36,7 +32,7 @@ def is_key_down(vk_code):
 
 
 def move_mouse(x, y):
-    """比 pyautogui.moveTo 更快的鼠标移动。"""
+    """使用 Win32 API 立即移动鼠标。"""
     ctypes.windll.user32.SetCursorPos(int(x), int(y))
 
 

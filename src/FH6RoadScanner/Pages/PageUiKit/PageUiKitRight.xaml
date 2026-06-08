@@ -1,0 +1,163 @@
+<local:MyPageRight x:Class="PageUiKitRight"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:local="clr-namespace:QING.UIKIT"
+                   PanScroll="PanBack">
+    <local:MyScrollViewer x:Name="PanBack"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="28,24,28,14" Grid.IsSharedSizeScope="True">
+            <local:MyCard x:Name="CardScanActions" Title="扫描控制" Margin="0,0,0,15">
+                <StackPanel Margin="20,40,20,18">
+                    <TextBlock Text="先在已探索道路上截取左下角“快速移动”提示作为模板，再测试差异分数。开始扫描后请切回游戏地图，不要移动鼠标。"
+                               TextWrapping="Wrap"
+                               Foreground="{DynamicResource ColorBrush2}"
+                               Margin="0,0,0,14" />
+                    <WrapPanel>
+                        <local:MyButton x:Name="BtnCaptureTemplate" Text="截取 / 更新模板" Padding="18,8" Margin="0,0,12,12" />
+                        <local:MyButton x:Name="BtnTestDiff" Text="测试当前差异" Padding="18,8" Margin="0,0,12,12" />
+                        <local:MyButton x:Name="BtnOpenHits" Text="打开截图文件夹" Padding="18,8" Margin="0,0,12,12" />
+                    </WrapPanel>
+                    <Border Background="{DynamicResource ColorBrushSemiTransparent}" CornerRadius="6" Padding="14" Margin="0,4,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock x:Name="LabScanState" Text="就绪" FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource ColorBrush3}" />
+                                <TextBlock x:Name="LabScanDetail" Text="正在连接扫描后端……" Margin="0,5,0,0" Foreground="{DynamicResource ColorBrushGray3}" />
+                            </StackPanel>
+                            <WrapPanel Grid.Column="1" VerticalAlignment="Center">
+                                <local:MyButton x:Name="BtnStartScan" Text="开始扫描" ColorType="Highlight" Padding="24,10" Margin="0,0,10,0" />
+                                <local:MyButton x:Name="BtnStopScan" Text="停止扫描" ColorType="Red" Padding="24,10" IsEnabled="False" />
+                            </WrapPanel>
+                        </Grid>
+                    </Border>
+                    <ProgressBar x:Name="ScanProgress" Height="8" Minimum="0" Maximum="100" Value="0" Margin="0,16,0,4" />
+                    <TextBlock x:Name="LabProgress" Text="进度 0%" HorizontalAlignment="Right" Foreground="{DynamicResource ColorBrushGray3}" />
+                </StackPanel>
+            </local:MyCard>
+
+            <local:MyCard x:Name="CardLog" Title="运行日志" Margin="0,0,0,15">
+                <Grid Margin="20,40,20,18">
+                    <local:MyTextBox x:Name="TxtLog"
+                                     Height="250"
+                                     IsReadOnly="True"
+                                     AcceptsReturn="True"
+                                     TextWrapping="Wrap"
+                                     VerticalScrollBarVisibility="Auto"
+                                     FontFamily="Microsoft YaHei UI"
+                                     FontSize="12" />
+                </Grid>
+            </local:MyCard>
+
+            <local:MyCard x:Name="CardRegions" Title="区域设置" Margin="0,0,0,15">
+                <StackPanel Margin="20,40,20,18">
+                    <TextBlock x:Name="LabScreenSize" Text="当前主屏幕：-" Foreground="{DynamicResource ColorBrushGray3}" Margin="0,0,0,14" />
+                    <TextBlock Text="扫描区域" FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource ColorBrush3}" Margin="0,0,0,10" />
+                    <UniformGrid Columns="4" Margin="0,0,0,16">
+                        <StackPanel Margin="0,0,10,0"><TextBlock Text="X 起点" Margin="0,0,0,5" /><local:MyTextBox x:Name="TxtScanX" Height="34" /></StackPanel>
+                        <StackPanel Margin="0,0,10,0"><TextBlock Text="Y 起点" Margin="0,0,0,5" /><local:MyTextBox x:Name="TxtScanY" Height="34" /></StackPanel>
+                        <StackPanel Margin="0,0,10,0"><TextBlock Text="宽度" Margin="0,0,0,5" /><local:MyTextBox x:Name="TxtScanW" Height="34" /></StackPanel>
+                        <StackPanel><TextBlock Text="高度" Margin="0,0,0,5" /><local:MyTextBox x:Name="TxtScanH" Height="34" /></StackPanel>
+                    </UniformGrid>
+                    <TextBlock Text="左下角快速移动检测区域" FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource ColorBrush3}" Margin="0,0,0,10" />
+                    <UniformGrid Columns="4">
+                        <StackPanel Margin="0,0,10,0"><TextBlock Text="X 起点" Margin="0,0,0,5" /><local:MyTextBox x:Name="TxtDetectX" Height="34" /></StackPanel>
+                        <StackPanel Margin="0,0,10,0"><TextBlock Text="Y 起点" Margin="0,0,0,5" /><local:MyTextBox x:Name="TxtDetectY" Height="34" /></StackPanel>
+                        <StackPanel Margin="0,0,10,0"><TextBlock Text="宽度" Margin="0,0,0,5" /><local:MyTextBox x:Name="TxtDetectW" Height="34" /></StackPanel>
+                        <StackPanel><TextBlock Text="高度" Margin="0,0,0,5" /><local:MyTextBox x:Name="TxtDetectH" Height="34" /></StackPanel>
+                    </UniformGrid>
+                </StackPanel>
+            </local:MyCard>
+
+            <local:MyCard x:Name="CardParameters" Title="扫描参数" Margin="0,0,0,15">
+                <StackPanel Margin="20,40,20,18">
+                    <UniformGrid Columns="3" Margin="0,0,0,16">
+                        <StackPanel Margin="0,0,12,0"><TextBlock Text="横向步长" Margin="0,0,0,5" /><local:MyTextBox x:Name="TxtStepX" Height="34" /></StackPanel>
+                        <StackPanel Margin="0,0,12,0"><TextBlock Text="纵向步长" Margin="0,0,0,5" /><local:MyTextBox x:Name="TxtStepY" Height="34" /></StackPanel>
+                        <StackPanel><TextBlock Text="移动延迟（秒）" Margin="0,0,0,5" /><local:MyTextBox x:Name="TxtMoveDelay" Height="34" /></StackPanel>
+                    </UniformGrid>
+                    <UniformGrid Columns="3">
+                        <StackPanel Margin="0,0,12,0"><TextBlock Text="差异阈值" Margin="0,0,0,5" /><local:MyTextBox x:Name="TxtDiffThreshold" Height="34" /></StackPanel>
+                        <StackPanel Margin="0,0,12,0"><TextBlock Text="开始延迟（秒）" Margin="0,0,0,5" /><local:MyTextBox x:Name="TxtStartDelay" Height="34" /></StackPanel>
+                        <StackPanel VerticalAlignment="Bottom"><TextBlock Text="建议先使用默认值" Foreground="{DynamicResource ColorBrushGray3}" Margin="0,0,0,8" /></StackPanel>
+                    </UniformGrid>
+                </StackPanel>
+            </local:MyCard>
+
+            <local:MyCard x:Name="CardOptions" Title="行为与配置" Margin="0,0,0,15">
+                <StackPanel Margin="20,40,20,18">
+                    <local:MyCheckBox x:Name="ChkStopOnHit" Text="发现疑似未探索道路后停止" Checked="True" Margin="0,0,0,12" />
+                    <local:MyCheckBox x:Name="ChkAutoSave" Text="开始扫描前自动保存配置" Checked="True" Margin="0,0,0,16" />
+                    <TextBlock Text="全局快捷键" FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource ColorBrush3}" Margin="0,0,0,10" />
+                    <Grid Margin="0,0,0,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="120" />
+                            <ColumnDefinition Width="180" />
+                            <ColumnDefinition Width="120" />
+                            <ColumnDefinition Width="180" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="开始扫描" VerticalAlignment="Center" />
+                        <local:MyComboBox x:Name="ComboStartHotkey" Grid.Column="1" Height="34" />
+                        <TextBlock Grid.Column="2" Text="停止扫描" VerticalAlignment="Center" Margin="20,0,0,0" />
+                        <local:MyComboBox x:Name="ComboStopHotkey" Grid.Column="3" Height="34" />
+                        <TextBlock Grid.Column="4"
+                                   Text="软件在后台或游戏界面处于前台时同样生效。"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Center"
+                                   Foreground="{DynamicResource ColorBrushGray3}"
+                                   Margin="20,0,0,0" />
+                    </Grid>
+                    <WrapPanel>
+                        <local:MyButton x:Name="BtnSaveConfig" Text="保存配置" ColorType="Highlight" Padding="18,8" Margin="0,0,12,0" />
+                        <local:MyButton x:Name="BtnRestoreDefaults" Text="恢复默认值" Padding="18,8" />
+                    </WrapPanel>
+                </StackPanel>
+            </local:MyCard>
+
+            <local:MyCard x:Name="CardAboutProject" Title="项目与作者" Margin="0,0,0,15">
+                <StackPanel Margin="20,40,20,18">
+                    <TextBlock Text="本工具通过模拟鼠标移动和截图识别地图界面变化，不修改游戏文件、不读取游戏内存、不注入游戏进程。"
+                               TextWrapping="Wrap"
+                               Foreground="{DynamicResource ColorBrush2}"
+                               Margin="0,0,0,14" />
+                    <local:MyListItem Title="原项目作者" Info="飛飝LahantziBade · Bilibili UID 9997742" IsHitTestVisible="False" Height="54" />
+                    <local:MyListItem Title="界面作者" Info="Dr.Hydra" IsHitTestVisible="False" Height="54" />
+                    <local:MyListItem Title="项目仓库" Info="Dr-hydra/FH6-Road-Scanner" IsHitTestVisible="False" Height="54" />
+                    <WrapPanel Margin="0,12,0,0">
+                        <local:MyButton x:Name="BtnOpenAuthor" Text="打开作者主页" Padding="18,8" Margin="0,0,12,0" />
+                        <local:MyButton x:Name="BtnOpenRepository" Text="打开项目仓库" Padding="18,8" />
+                    </WrapPanel>
+                </StackPanel>
+            </local:MyCard>
+
+            <local:MyCard x:Name="CardInterface" Title="界面与组件" Margin="0,0,0,15">
+                <StackPanel Margin="20,40,20,18">
+                    <local:MyListItem Title="界面作者" Info="Dr.Hydra · QING.UIKIT" IsHitTestVisible="False" Height="58" />
+                    <local:MyListItem Title="Meloong-Git/PCL" Info="QING.UIKIT 的界面代码来源项目。" IsHitTestVisible="False" Height="58" />
+                    <local:MyListItem Title="QING.Core" Info="通用基础与 WPF 辅助组件。" IsHitTestVisible="False" Height="58" />
+                    <WrapPanel>
+                        <local:MyButton x:Name="BtnOpenUiKit" Text="打开 QING.UIKIT" Padding="18,8" Margin="0,0,12,0" />
+                        <local:MyButton x:Name="BtnOpenPcl" Text="打开 PCL 来源项目" Padding="18,8" />
+                    </WrapPanel>
+                </StackPanel>
+            </local:MyCard>
+
+            <local:MyCard x:Name="CardLicenses" Title="许可证说明" Margin="0,0,0,15">
+                <StackPanel Margin="20,40,20,18">
+                    <local:MyListItem Title="扫描业务" Info="原作者飛飝LahantziBade；遵循原项目非商业免费许可。" IsHitTestVisible="False" Height="58" />
+                    <local:MyListItem Title="WPF / QING.UIKIT" Info="界面代码遵循 GNU GPLv3。" IsHitTestVisible="False" Height="58" />
+                    <local:MyListItem Title="QING.Core" Info="按发行包中随附的原许可证使用。" IsHitTestVisible="False" Height="58" />
+                    <TextBlock Text="各组件继续遵循各自许可证，不合并为单一许可证。完整许可文本、来源和修改说明位于发行包的 LICENSES 目录及 NOTICE.md。"
+                               TextWrapping="Wrap"
+                               Foreground="{DynamicResource ColorBrush2}"
+                               Margin="4,12,0,14" />
+                    <local:MyButton x:Name="BtnOpenLicenses" Text="打开许可证目录" Padding="18,8" HorizontalAlignment="Left" />
+                </StackPanel>
+            </local:MyCard>
+        </StackPanel>
+    </local:MyScrollViewer>
+</local:MyPageRight>

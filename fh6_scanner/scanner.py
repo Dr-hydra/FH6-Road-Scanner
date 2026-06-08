@@ -2,7 +2,7 @@ import os
 import time
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Callable, Tuple
+from typing import Callable, Optional, Tuple
 
 import cv2
 import numpy as np
@@ -33,6 +33,7 @@ def run_scan(
     log: Callable[[str], None],
     status: Callable[[str], None],
     progress: Callable[[float], None],
+    hit: Optional[Callable[[int, int, float, str, str], None]] = None,
 ):
     """
     执行地图扫描。
@@ -46,7 +47,7 @@ def run_scan(
 
         if template is None:
             log("模板读取失败，请重新截取模板。")
-            return
+            return "error"
 
         scan_x, scan_y, scan_w, scan_h = params.scan_region
         detect_region = params.detect_region
@@ -64,7 +65,7 @@ def run_scan(
         for i in range(int(params.start_delay), 0, -1):
             if stop_checker():
                 log("扫描已停止。")
-                return
+                return "stopped"
 
             status(f"{i} 秒后开始扫描……")
             time.sleep(1)
@@ -74,7 +75,7 @@ def run_scan(
         for _ in range(8):
             if stop_checker():
                 log("扫描已停止。")
-                return
+                return "stopped"
 
             current = grabber.grab_region(detect_region)
             base_scores.append(diff_score(current, template))
@@ -93,7 +94,7 @@ def run_scan(
         while y <= y1:
             if stop_checker():
                 log("扫描已停止。")
-                return
+                return "stopped"
 
             if row_index % 2 == 0:
                 xs = range(x0, x1 + 1, params.step_x)
@@ -103,7 +104,7 @@ def run_scan(
             for x in xs:
                 if stop_checker():
                     log("扫描已停止。")
-                    return
+                    return "stopped"
 
                 move_mouse(x, y)
                 time.sleep(params.move_delay)
@@ -132,11 +133,13 @@ def run_scan(
                     log(f"完整截图：{full_path}")
                     log(f"检测区域截图：{crop_path}")
                     status(f"命中：x={x}, y={y}")
+                    if hit is not None:
+                        hit(x, y, score, full_path, crop_path)
 
                     beep()
 
                     if params.stop_on_hit:
-                        return
+                        return "hit"
 
             row_index += 1
             progress(row_index / total_rows * 100)
@@ -145,7 +148,9 @@ def run_scan(
         progress(100)
         log("当前扫描区域已扫完，没有发现疑似点。")
         status("扫描完成")
+        return "completed"
 
     except Exception as e:
         log(f"扫描出错：{e}")
         status("扫描出错")
+        return "error"
